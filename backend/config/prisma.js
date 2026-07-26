@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../generated/prisma/index.js";
+import { PrismaClient } from "../generated/prisma/index.js";
 
 // Create a single, shared Prisma Client instance.
 // Every controller/service imports THIS file instead of
