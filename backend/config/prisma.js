@@ -1,9 +1,13 @@
-import { PrismaClient } from "../generated/prisma/index.js";
+import pkg from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-// Create a single, shared Prisma Client instance.
-// Every controller/service imports THIS file instead of
-// instantiating their own PrismaClient — this avoids
-// exhausting the Postgres connection pool.
-const prisma = new PrismaClient();
+const { PrismaClient } = pkg;
+
+// The adapter is what actually opens the TCP connection to Postgres.
+// Prisma Client now delegates all real database communication to it,
+// rather than connecting directly itself.
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+
+const prisma = new PrismaClient({ adapter });
 
 export default prisma;
