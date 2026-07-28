@@ -1,4 +1,4 @@
-import { registerUser , loginUser , refreshAccessToken } from "../services/authService.js";
+import { registerUser , loginUser , refreshAccessToken , logoutUser } from "../services/authService.js";
 
 export async function register(req, res) {
   try {
@@ -59,6 +59,28 @@ export async function refresh(req, res) {
       success: true,
       message: "Access token refreshed",
       data: result,
+    });
+
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+
+export async function logout(req, res) {
+  try {
+    const { refreshToken } = req.body;
+
+    const result = await logoutUser(refreshToken);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
     });
 
   } catch (error) {

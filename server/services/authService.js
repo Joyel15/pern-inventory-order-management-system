@@ -142,3 +142,21 @@ export async function refreshAccessToken(refreshToken) {
 
   return { accessToken: newAccessToken };
 };
+
+
+export async function logoutUser(refreshToken) {
+  if (!refreshToken) {
+    const error = new Error("Refresh token is required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // deleteMany (not delete) because it won't throw if the token
+  // doesn't exist — logging out an already-invalid token should
+  // still succeed quietly, not error out.
+  await prisma.refreshToken.deleteMany({
+    where: { token: refreshToken },
+  });
+
+  return { message: "Logged out successfully" };
+}
