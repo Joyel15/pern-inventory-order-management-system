@@ -1,4 +1,4 @@
-import { registerUser } from "../services/authService.js";
+import { registerUser , loginUser , refreshAccessToken } from "../services/authService.js";
 
 export async function register(req, res) {
   try {
@@ -23,4 +23,50 @@ export async function register(req, res) {
       message: error.message || "Something went wrong",
     });
   }
-}
+};
+
+
+export async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const result = await loginUser({ email, password });
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: result,
+    });
+
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+
+export async function refresh(req, res) {
+  try {
+    const { refreshToken } = req.body;
+
+    const result = await refreshAccessToken(refreshToken);
+
+    res.status(200).json({
+      success: true,
+      message: "Access token refreshed",
+      data: result,
+    });
+
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};

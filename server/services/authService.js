@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import prisma from "../config/prisma.js";
 
 const SALT_ROUNDS = 10;
@@ -40,4 +41,104 @@ export async function registerUser({ name, email, password, role }) {
     // re-throw as-is; the controller will treat it as a generic 500.
     throw error;
   }
+};
+
+
+// Login 
+const ACCESS_TOKEN_EXPIRY = "15m";
+const REFRESH_TOKEN_EXPIRY = "7d";
+const REFRESH_TOKEN_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+function generateAccessToken(user) {
+  return jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
+}
+
+function generateRefreshToken(user) {
+  return jwt.sign(
+    { userId: user.id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: REFRESH_TOKEN_EXPIRY }
+  );
+}
+
+export async function loginUser({ email, password }) {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  // Deliberately vague error — see explanation below
+  if (!user) {
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const passwordMatches = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatches) {
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  // Persist the refresh token so it can be revoked/checked later
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS),
+    },
+  });
+
+  const { password: _password, ...safeUser } = user;
+
+  return { user: safeUser, accessToken, refreshToken };
+};
+
+
+export async function refreshAccessToken(refreshToken) {
+  if (!refreshToken) {
+    const error = new Error("Refresh token is required");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Step 1: verify the JWT signature/expiry itself
+  let payload;
+  try {
+    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  } catch (err) {
+    const error = new Error("Invalid or expired refresh token");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Step 2: confirm this exact token still exists in the DB
+  // (hasn't been revoked/logged-out, and matches our stored record)
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: { token: refreshToken },
+  });
+
+  if (!storedToken || storedToken.expiresAt < new Date()) {
+    const error = new Error("Refresh token not recognized or expired");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+
+  if (!user) {
+    const error = new Error("User no longer exists");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const newAccessToken = generateAccessToken(user);
+
+  return { accessToken: newAccessToken };
 };

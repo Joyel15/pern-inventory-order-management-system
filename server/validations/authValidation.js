@@ -19,3 +19,9 @@ export const registerSchema = z.object({
    of the three valid enum values, not arbitrary text. */
   role: z.enum(["ADMIN", "MANAGER", "STAFF"]).optional(),
 });
+
+
+export const loginSchema = z.object({
+  email: z.string().email("Please provide a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
