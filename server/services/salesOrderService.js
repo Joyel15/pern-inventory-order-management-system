@@ -65,3 +65,94 @@ export async function createSalesOrder({ customerId, items }, userId) {
     return order;
   });
 };
+
+
+const orderInclude = {
+  customer: { select: { id: true, name: true, email: true } },
+  items: {
+    include: {
+      product: { select: { id: true, name: true, sku: true } },
+    },
+  },
+};
+
+export async function getSalesOrders({ page = 1, limit = 10, status, customerId }) {
+  const skip = (page - 1) * limit;
+
+  const where = {
+    ...(status && { status }),
+    ...(customerId && { customerId: Number(customerId) }),
+  };
+
+  const [orders, total] = await Promise.all([
+    prisma.salesOrder.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: orderInclude,
+    }),
+    prisma.salesOrder.count({ where }),
+  ]);
+
+  return {
+    orders,
+    pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+  };
+};
+
+
+export async function getSalesOrderById(id) {
+  const order = await prisma.salesOrder.findUnique({
+    where: { id },
+    include: orderInclude,
+  });
+
+  if (!order) {
+    const error = new Error("Sales order not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return order;
+};
+
+
+export async function updateSalesOrderStatus(id, newStatus) {
+  return prisma.$transaction(async (tx) => {
+    const order = await tx.salesOrder.findUnique({
+      where: { id },
+      include: { items: true },
+    });
+
+    if (!order) {
+      const error = new Error("Sales order not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Prevent nonsensical transitions — an order that's already
+    // finished shouldn't be movable to a different state at all.
+    if (order.status === "COMPLETED" || order.status === "CANCELLED") {
+      const error = new Error(`Cannot change status of a ${order.status.toLowerCase()} order`);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // Cancelling restores stock — the mirror image of creation's decrement.
+    if (newStatus === "CANCELLED") {
+      for (const item of order.items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { quantity: { increment: item.quantity } },
+        });
+      }
+    }
+
+    return tx.salesOrder.update({
+      where: { id },
+      data: { status: newStatus },
+      include: orderInclude,
+    });
+  });
+};
