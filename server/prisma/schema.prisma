@@ -27,9 +27,11 @@ model User {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   refreshTokens RefreshToken[]
   categories    Category[]
   suppliers     Supplier[]
+  products Product[]
 
   @@map("users")
 }
@@ -56,6 +58,8 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  products Product[]
+
   @@map("categories")
 }
 
@@ -72,5 +76,31 @@ model Supplier {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  products Product[]
+
   @@map("suppliers")
+}
+
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  sku         String   @unique
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  quantity    Int      @default(0)
+
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  supplierId  Int?
+  supplier    Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
+  createdBy   Int?
+  creator     User?    @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
 }
