@@ -32,6 +32,7 @@ model User {
   categories    Category[]
   suppliers     Supplier[]
   products Product[]
+  customers Customer[]
 
   @@map("users")
 }
@@ -103,4 +104,19 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   @@map("products")
+}
+
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  createdBy Int?
+  creator   User?    @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
 }
