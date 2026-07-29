@@ -4,6 +4,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import supplierRoutes from "./routes/supplierRoutes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use("/auth", authRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/suppliers",supplierRoutes);
 
 const PORT = process.env.PORT || 5000;
 
