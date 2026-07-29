@@ -33,6 +33,7 @@ model User {
   suppliers     Supplier[]
   products Product[]
   customers Customer[]
+  salesOrders SalesOrder[]
 
   @@map("users")
 }
@@ -103,6 +104,8 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+ salesOrderItems SalesOrderItem[]
+
   @@map("products")
 }
 
@@ -118,5 +121,42 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  salesOrders SalesOrder[]
+
   @@map("customers")
+}
+
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+model SalesOrder {
+  id          Int             @id @default(autoincrement())
+  customerId  Int
+  customer    Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  status      OrderStatus     @default(PENDING)
+  totalAmount Decimal         @db.Decimal(10, 2)
+  items       SalesOrderItem[]
+  createdBy   Int?
+  creator     User?           @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("sales_orders")
+}
+
+model SalesOrderItem {
+  id           Int        @id @default(autoincrement())
+  salesOrderId Int
+  salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  productId    Int
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity     Int
+  priceAtSale  Decimal    @db.Decimal(10, 2)
+
+  @@map("sales_order_items")
 }
