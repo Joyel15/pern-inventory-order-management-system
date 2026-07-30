@@ -35,6 +35,7 @@ model User {
   customers Customer[]
   salesOrders SalesOrder[]
   purchaseOrders PurchaseOrder[]
+  stockMovements StockMovement[]
 
   @@map("users")
 }
@@ -108,6 +109,7 @@ model Product {
 
  salesOrderItems SalesOrderItem[]
  purchaseOrderItems PurchaseOrderItem[]
+ stockMovements StockMovement[]
 
   @@map("products")
 }
@@ -190,4 +192,24 @@ model PurchaseOrderItem {
   costAtPurchase  Decimal       @db.Decimal(10, 2)
 
   @@map("purchase_order_items")
+}
+
+
+enum MovementType {
+  STOCK_IN
+  STOCK_OUT
+}
+
+model StockMovement {
+  id        Int          @id @default(autoincrement())
+  productId Int
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
+  type      MovementType
+  quantity  Int
+  reason    String?
+  createdBy Int?
+  creator   User?        @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+
+  @@map("stock_movements")
 }
