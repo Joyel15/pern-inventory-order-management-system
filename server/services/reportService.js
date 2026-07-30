@@ -20,4 +20,24 @@ export async function getMonthlyRevenue() {
     revenue: Number(row.revenue),
     orderCount: Number(row.order_count),
   }));
-}
+};
+
+
+export async function getInventoryValuation() {
+  const result = await prisma.$queryRaw`
+    SELECT
+      c.name AS category_name,
+      SUM(p.quantity * p.price) AS total_value,
+      SUM(p.quantity) AS total_units
+    FROM products p
+    LEFT JOIN categories c ON p."categoryId" = c.id
+    GROUP BY c.name
+    ORDER BY total_value DESC
+  `;
+
+  return result.map((row) => ({
+    categoryName: row.category_name || "Uncategorized",
+    totalValue: Number(row.total_value),
+    totalUnits: Number(row.total_units),
+  }));
+};
