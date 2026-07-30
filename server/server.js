@@ -12,6 +12,7 @@ import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
 import stockMovementRoutes from "./routes/stockMovementRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/purchase-orders", purchaseOrderRoutes);
 app.use("/stock-movements", stockMovementRoutes);
 app.use("/users", userRoutes);
 app.use("/profile", profileRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 const PORT = process.env.PORT || 5000;
 
