@@ -11,12 +11,4 @@ router.post("/login", validate(loginSchema), login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
 
-router.get("/me", protect, (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "You are authenticated",
-    data: req.user,
-  });
-});
-
 export default router;
