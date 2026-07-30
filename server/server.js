@@ -38,6 +38,24 @@ app.use("/profile", profileRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/reports", reportRoutes);
 
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.method} ${req.originalUrl} not found`,
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the full error server-side for debugging
+
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
