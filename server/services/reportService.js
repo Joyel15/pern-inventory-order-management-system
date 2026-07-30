@@ -41,3 +41,30 @@ export async function getInventoryValuation() {
     totalUnits: Number(row.total_units),
   }));
 };
+
+
+export async function getProductPerformance(limit = 10) {
+  const result = await prisma.$queryRaw`
+    SELECT
+      p.id,
+      p.name,
+      p.sku,
+      SUM(soi.quantity) AS total_units_sold,
+      SUM(soi.quantity * soi."priceAtSale") AS total_revenue
+    FROM sales_order_items soi
+    JOIN products p ON soi."productId" = p.id
+    JOIN sales_orders so ON soi."salesOrderId" = so.id
+    WHERE so.status = 'COMPLETED'
+    GROUP BY p.id, p.name, p.sku
+    ORDER BY total_revenue DESC
+    LIMIT ${limit}
+  `;
+
+  return result.map((row) => ({
+    productId: row.id,
+    name: row.name,
+    sku: row.sku,
+    totalUnitsSold: Number(row.total_units_sold),
+    totalRevenue: Number(row.total_revenue),
+  }));
+}
