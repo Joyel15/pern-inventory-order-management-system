@@ -9,6 +9,7 @@ import productRoutes from "./routes/productRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import salesOrderRoutes from "./routes/salesOrderRoutes.js";
 import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
+import stockMovementRoutes from "./routes/stockMovementRoutes.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/products", productRoutes);
 app.use("/customers", customerRoutes);
 app.use("/sales-orders", salesOrderRoutes);
 app.use("/purchase-orders", purchaseOrderRoutes);
+app.use("/stock-movements", stockMovementRoutes);
 
 const PORT = process.env.PORT || 5000;
 
