@@ -2,18 +2,13 @@ import request from "supertest";
 import app from "../app.js";
 import prisma from "../config/prisma.js";
 import bcrypt from "bcrypt";
+import { resetDatabase } from "./helpers/resetDb.js";
 
 let adminToken;
 let testProduct;
 
 beforeAll(async () => {
-  await prisma.stockMovement.deleteMany();
-  await prisma.salesOrderItem.deleteMany();
-  await prisma.salesOrder.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.refreshToken.deleteMany();
-  await prisma.user.deleteMany();
+  await resetDatabase();
 
   const hashedPassword = await bcrypt.hash("password123", 10);
   await prisma.user.create({

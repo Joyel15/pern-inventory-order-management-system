@@ -1,11 +1,11 @@
 import request from "supertest";
 import app from "../app.js";
 import prisma from "../config/prisma.js";
+import { resetDatabase } from "./helpers/resetDb.js";
 
 // Runs once before any test in this file — start from a clean slate
 beforeAll(async () => {
-  await prisma.refreshToken.deleteMany();
-  await prisma.user.deleteMany();
+  await resetDatabase();
 });
 
 // Runs once after all tests in this file finish — close the DB connection

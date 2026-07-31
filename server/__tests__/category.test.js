@@ -1,15 +1,13 @@
 import request from "supertest";
 import app from "../app.js";
 import prisma from "../config/prisma.js";
+import { resetDatabase } from "./helpers/resetDb.js";
 
 let adminToken;
 let staffToken;
 
 beforeAll(async () => {
-  // Clean slate for everything this test file touches
-  await prisma.category.deleteMany();
-  await prisma.refreshToken.deleteMany();
-  await prisma.user.deleteMany();
+  await resetDatabase();
 
   // Create an ADMIN user directly via Prisma — bypassing the API
   // entirely, since we're not testing registration here, just

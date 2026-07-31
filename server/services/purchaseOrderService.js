@@ -33,14 +33,13 @@ export async function createPurchaseOrder({ supplierId, items }, userId) {
         costAtPurchase: item.cost,
       });
 
-      // Receiving stock — increment, not decrement. No stock check needed.
       await tx.product.update({
         where: { id: product.id },
         data: { quantity: { increment: item.quantity } },
       });
     }
 
-    return tx.purchaseOrder.create({
+    const order = await tx.purchaseOrder.create({
       data: {
         supplierId,
         totalAmount,
@@ -49,6 +48,11 @@ export async function createPurchaseOrder({ supplierId, items }, userId) {
       },
       include: poInclude,
     });
+
+    return {
+      ...order,
+      totalAmount: Number(order.totalAmount).toFixed(2),
+    };
   });
 }
 
