@@ -62,7 +62,10 @@ export async function createSalesOrder({ customerId, items }, userId) {
       },
     });
 
-    return order;
+    return {
+      ...order,
+      totalAmount: Number(order.totalAmount).toFixed(2),
+    };
   });
 };
 
@@ -148,11 +151,16 @@ export async function updateSalesOrderStatus(id, newStatus) {
         });
       }
     }
-
-    return tx.salesOrder.update({
+    
+  const updated = await tx.salesOrder.update({
       where: { id },
       data: { status: newStatus },
       include: orderInclude,
-    });
   });
+
+return {
+  ...updated,
+  totalAmount: Number(updated.totalAmount).toFixed(2),
+};
+});
 };
