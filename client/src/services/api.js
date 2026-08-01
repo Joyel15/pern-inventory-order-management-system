@@ -31,9 +31,17 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Never attempt a refresh for the auth endpoints themselves —
+    // a failed login/register/refresh is a real, final error,
+    // not a case of "the access token needs refreshing"
+    const isAuthEndpoint =
+      originalRequest.url.includes("/auth/login") ||
+      originalRequest.url.includes("/auth/register") ||
+      originalRequest.url.includes("/auth/refresh");
+
     // Only attempt this once per request, and only for 401s —
     // avoids infinite retry loops if refresh itself keeps failing
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
