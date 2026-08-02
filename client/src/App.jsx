@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./layouts/DashBoardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categories from "./pages/Categories";
+import Suppliers from "./pages/Suppliers";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/suppliers" element={<Suppliers />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
