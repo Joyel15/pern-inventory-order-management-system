@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
 import Products from "./pages/Products";
+import Customers from "./pages/Customers";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/customers" element={<Customers />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
