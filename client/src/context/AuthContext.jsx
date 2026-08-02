@@ -57,8 +57,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  function hasRole(...allowedRoles) {
+  return user && allowedRoles.includes(user.role);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, hasRole }}>
       {children}
     </AuthContext.Provider>
   );

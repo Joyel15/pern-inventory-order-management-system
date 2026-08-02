@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./layouts/DashBoardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Categories from "./pages/Categories";
 
 function App() {
   return (
@@ -18,8 +19,7 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* Future pages go here as siblings: */}
-          {/* <Route path="/products" element={<Products />} /> */}
+          <Route path="/categories" element={<Categories />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
