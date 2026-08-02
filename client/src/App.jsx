@@ -9,6 +9,8 @@ import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
 import Products from "./pages/Products";
 import Customers from "./pages/Customers";
+import SalesOrders from "./pages/SalesOrders";
+import SalesOrderDetail from "./pages/SalesOrderDetail";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/products" element={<Products />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/sales-orders" element={<SalesOrders />} />
+          <Route path="/sales-orders/:id" element={<SalesOrderDetail />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
