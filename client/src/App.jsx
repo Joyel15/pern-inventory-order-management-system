@@ -1,10 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+
 import DashboardLayout from "./layouts/DashBoardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -22,6 +25,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/products" element={<Products />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
