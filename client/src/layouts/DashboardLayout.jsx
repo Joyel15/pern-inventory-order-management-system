@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -13,11 +14,27 @@ const navItems = [
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <div className="flex h-screen bg-gray-50 relative">
+      {/* Mobile backdrop — only visible when sidebar is open on small screens */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — slides in/out on mobile, always visible on desktop */}
+      <aside
+        className={`
+          fixed md:static inset-y-0 left-0 z-40
+          w-64 bg-white border-r border-gray-200 flex flex-col
+          transform transition-transform duration-200
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        `}
+      >
         <div className="px-6 py-5 border-b border-gray-200">
           <h1 className="text-lg font-bold text-gray-900">Inventory MS</h1>
         </div>
@@ -27,6 +44,7 @@ export default function DashboardLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive
@@ -42,12 +60,34 @@ export default function DashboardLayout() {
       </aside>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <div />
+      <div className="flex-1 flex flex-col overflow-hidden w-full">
+        <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex justify-between items-center">
+          {/* Hamburger button — only shown on mobile */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden text-gray-600"
+            aria-label="Open menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+
+          <div className="hidden md:block" />
+
           <div className="flex items-center gap-4">
-            <div className="text-right">
+            <div className="text-right hidden sm:block">
               <p className="text-sm font-medium text-gray-900">{user?.name}</p>
               <p className="text-xs text-gray-500">{user?.role}</p>
             </div>
@@ -60,8 +100,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        {/* Page content — whichever child route matches renders here */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
         </main>
       </div>
