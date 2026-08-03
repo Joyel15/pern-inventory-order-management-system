@@ -11,6 +11,8 @@ import Products from "./pages/Products";
 import Customers from "./pages/Customers";
 import SalesOrders from "./pages/SalesOrders";
 import SalesOrderDetail from "./pages/SalesOrderDetail";
+import PurchaseOrders from "./pages/PurchaseOrders";
+import PurchaseOrderDetail from "./pages/PurchaseOrderDetail";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/sales-orders" element={<SalesOrders />} />
           <Route path="/sales-orders/:id" element={<SalesOrderDetail />} />
+          <Route path="/purchase-orders" element={<PurchaseOrders />} />
+          <Route path="/purchase-orders/:id" element={<PurchaseOrderDetail />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
