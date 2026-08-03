@@ -2,19 +2,20 @@ import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const navItems = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/products", label: "Products" },
-  { to: "/categories", label: "Categories" },
-  { to: "/suppliers", label: "Suppliers" },
-  { to: "/customers", label: "Customers" },
-  { to: "/sales-orders", label: "Sales Orders" },
-  { to: "/purchase-orders", label: "Purchase Orders" },
-];
-
 export default function DashboardLayout() {
-  const { user, logout } = useAuth();
+  const { user, logout , hasRole } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = [
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/products", label: "Products" },
+    { to: "/categories", label: "Categories" },
+    { to: "/suppliers", label: "Suppliers" },
+    { to: "/customers", label: "Customers" },
+    { to: "/sales-orders", label: "Sales Orders" },
+    { to: "/purchase-orders", label: "Purchase Orders" },
+    ...(hasRole("ADMIN") ? [{ to: "/users", label: "Users" }] : []),
+  ];
 
   return (
     <div className="flex h-screen bg-gray-50 relative">
