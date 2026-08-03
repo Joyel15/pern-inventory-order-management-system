@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import { useAuth } from "../context/AuthContext";
 import SalesOrderFormModal from "../components/SalesOrderFormModal";
+import { Plus, ShoppingCart, ChevronRight } from "lucide-react";
 
 const statusColors = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  PROCESSING: "bg-blue-100 text-blue-800",
-  COMPLETED: "bg-green-100 text-green-800",
-  CANCELLED: "bg-red-100 text-red-800",
+  PENDING: "bg-amber-50 text-amber-700",
+  PROCESSING: "bg-sky-50 text-sky-700",
+  COMPLETED: "bg-emerald-50 text-emerald-700",
+  CANCELLED: "bg-rose-50 text-rose-700",
 };
 
 export default function SalesOrders() {
@@ -35,13 +36,19 @@ export default function SalesOrders() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Sales Orders</h1>
+        <div>
+          <h1 className="text-xl font-semibold text-slate-900">Sales Orders</h1>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Track orders placed by your customers
+          </p>
+        </div>
         {canCreate && (
           <button
             onClick={() => setModalOpen(true)}
-            className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700"
+            className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            + New Order
+            <Plus size={16} />
+            New Order
           </button>
         )}
       </div>
@@ -49,7 +56,7 @@ export default function SalesOrders() {
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
       >
         <option value="">All Statuses</option>
         <option value="PENDING">Pending</option>
@@ -58,53 +65,62 @@ export default function SalesOrders() {
         <option value="CANCELLED">Cancelled</option>
       </select>
 
-      <div className="bg-white rounded-lg shadow overflow-x-auto">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">
+              <th className="text-left px-4 py-3 font-medium text-slate-500">
                 Order #
               </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">
+              <th className="text-left px-4 py-3 font-medium text-slate-500">
                 Customer
               </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">
+              <th className="text-left px-4 py-3 font-medium text-slate-500">
                 Total
               </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">
+              <th className="text-left px-4 py-3 font-medium text-slate-500">
                 Status
               </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">
+              <th className="text-left px-4 py-3 font-medium text-slate-500">
                 Date
               </th>
-              <th className="text-right px-4 py-3 font-medium text-gray-600">
+              <th className="text-right px-4 py-3 font-medium text-slate-500">
                 View
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-slate-100">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-gray-500">
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center text-slate-500"
+                >
                   Loading...
                 </td>
               </tr>
             ) : orders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-gray-500">
-                  No orders found
+                <td colSpan={6} className="px-4 py-10">
+                  <div className="flex flex-col items-center gap-2 text-slate-400">
+                    <ShoppingCart size={28} strokeWidth={1.5} />
+                    <p className="text-sm">No orders found</p>
+                  </div>
                 </td>
               </tr>
             ) : (
               orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-4 py-3 font-medium text-gray-900">
+                <tr
+                  key={order.id}
+                  className="hover:bg-slate-50 transition-colors"
+                >
+                  <td className="px-4 py-3 font-medium text-slate-900">
                     #{order.id}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-slate-600">
                     {order.customer.name}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-slate-600">
                     ₹{order.totalAmount}
                   </td>
                   <td className="px-4 py-3">
@@ -114,15 +130,16 @@ export default function SalesOrders() {
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-slate-500">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
                       to={`/sales-orders/${order.id}`}
-                      className="text-blue-600 hover:text-blue-700 font-medium"
+                      className="inline-flex items-center gap-0.5 text-indigo-600 hover:text-indigo-700 font-medium"
                     >
                       View
+                      <ChevronRight size={14} />
                     </Link>
                   </td>
                 </tr>
@@ -133,13 +150,17 @@ export default function SalesOrders() {
       </div>
 
       {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-1.5">
           {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
             (p) => (
               <button
                 key={p}
                 onClick={() => fetchOrders(p)}
-                className={`px-3 py-1 rounded-md text-sm ${p === pagination.page ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-gray-700"}`}
+                className={`h-8 min-w-8 px-2 rounded-md text-sm font-medium transition-colors ${
+                  p === pagination.page
+                    ? "bg-indigo-600 text-white"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                }`}
               >
                 {p}
               </button>
