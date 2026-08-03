@@ -2,13 +2,19 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { User, KeyRound } from "lucide-react";
 
 export default function Profile() {
   const { user, logout } = useAuth();
 
   return (
     <div className="max-w-md space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
+      <div>
+        <h1 className="text-xl font-semibold text-slate-900">Profile</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
+          Manage your account details and password
+        </p>
+      </div>
       <ProfileInfoForm user={user} />
       <PasswordChangeForm onPasswordChanged={logout} />
     </div>
@@ -39,11 +45,16 @@ function ProfileInfoForm({ user }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Info</h2>
+    <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+          <User size={16} />
+        </div>
+        <h2 className="text-sm font-semibold text-slate-900">Account Info</h2>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-700 mb-1">
             Name
           </label>
           <input
@@ -52,15 +63,15 @@ function ProfileInfoForm({ user }) {
               required: "Name is required",
               minLength: { value: 2, message: "Too short" },
             })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           {errors.name && (
-            <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+            <p className="text-sm text-rose-600 mt-1">{errors.name.message}</p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-700 mb-1">
             Email
           </label>
           <input
@@ -72,20 +83,20 @@ function ProfileInfoForm({ user }) {
                 message: "Please enter a valid email",
               },
             })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           {errors.email && (
-            <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+            <p className="text-sm text-rose-600 mt-1">{errors.email.message}</p>
           )}
         </div>
 
         {serverError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+          <p className="text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-md px-3 py-2">
             {serverError}
           </p>
         )}
         {success && (
-          <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+          <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md px-3 py-2">
             Profile updated successfully
           </p>
         )}
@@ -93,7 +104,7 @@ function ProfileInfoForm({ user }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
           {isSubmitting ? "Saving..." : "Save Changes"}
         </button>
@@ -128,13 +139,18 @@ function PasswordChangeForm({ onPasswordChanged }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">
-        Change Password
-      </h2>
+    <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-8 w-8 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
+          <KeyRound size={16} />
+        </div>
+        <h2 className="text-sm font-semibold text-slate-900">
+          Change Password
+        </h2>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-700 mb-1">
             Current Password
           </label>
           <input
@@ -142,17 +158,17 @@ function PasswordChangeForm({ onPasswordChanged }) {
             {...register("currentPassword", {
               required: "Current password is required",
             })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           {errors.currentPassword && (
-            <p className="text-sm text-red-600 mt-1">
+            <p className="text-sm text-rose-600 mt-1">
               {errors.currentPassword.message}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-700 mb-1">
             New Password
           </label>
           <input
@@ -161,17 +177,17 @@ function PasswordChangeForm({ onPasswordChanged }) {
               required: "New password is required",
               minLength: { value: 6, message: "Must be at least 6 characters" },
             })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           {errors.newPassword && (
-            <p className="text-sm text-red-600 mt-1">
+            <p className="text-sm text-rose-600 mt-1">
               {errors.newPassword.message}
             </p>
           )}
         </div>
 
         {serverError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+          <p className="text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-md px-3 py-2">
             {serverError}
           </p>
         )}
@@ -179,7 +195,7 @@ function PasswordChangeForm({ onPasswordChanged }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
           {isSubmitting ? "Changing..." : "Change Password"}
         </button>
