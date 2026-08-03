@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../services/api";
+import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import { useAuth } from "../context/AuthContext";
 import PurchaseOrderFormModal from "../components/PurchaseOrderFormModal";
 
@@ -15,28 +15,17 @@ export default function PurchaseOrders() {
   const { hasRole } = useAuth();
   const canCreate = hasRole("ADMIN", "MANAGER"); // no STAFF here, unlike Sales Orders
 
-  const [orders, setOrders] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [statusFilter, setStatusFilter] = useState("");
-  const [loading, setLoading] = useState(true);
+  const {
+    items: orders,
+    pagination,
+    loading,
+    fetchItems: fetchOrders,
+  } = usePaginatedResource("/purchase-orders", {
+    status: statusFilter || undefined,
+  });
+
   const [modalOpen, setModalOpen] = useState(false);
-
-  async function fetchOrders(page = 1) {
-    setLoading(true);
-    try {
-      const res = await api.get("/purchase-orders", {
-        params: { page, status: statusFilter || undefined },
-      });
-      setOrders(res.data.data);
-      setPagination(res.data.pagination);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchOrders(1);
-  }, [statusFilter]);
 
   async function handleCreated() {
     setModalOpen(false);

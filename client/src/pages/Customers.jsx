@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import CustomerFormModal from "../components/CustomerFormModal";
@@ -8,29 +9,17 @@ export default function Customers() {
   const { hasRole } = useAuth();
   const canManage = hasRole("ADMIN", "MANAGER");
 
-  const [customers, setCustomers] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const {
+    items: customers,
+    pagination,
+    loading,
+    fetchItems: fetchCustomers,
+  } = usePaginatedResource("/customers", { search });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [deletingCustomer, setDeletingCustomer] = useState(null);
-
-  async function fetchCustomers(page = 1) {
-    setLoading(true);
-    try {
-      const res = await api.get("/customers", { params: { page, search } });
-      setCustomers(res.data.data);
-      setPagination(res.data.pagination);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchCustomers(1);
-  }, [search]);
 
   function openCreateModal() {
     setEditingCustomer(null);

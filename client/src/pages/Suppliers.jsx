@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import SupplierFormModal from "../components/SupplierFormModal";
@@ -8,29 +9,17 @@ export default function Suppliers() {
   const { hasRole } = useAuth();
   const canManage = hasRole("ADMIN", "MANAGER");
 
-  const [suppliers, setSuppliers] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const {
+    items: suppliers,
+    pagination,
+    loading,
+    fetchItems: fetchSuppliers,
+  } = usePaginatedResource("/suppliers", { search });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [deletingSupplier, setDeletingSupplier] = useState(null);
-
-  async function fetchSuppliers(page = 1) {
-    setLoading(true);
-    try {
-      const res = await api.get("/suppliers", { params: { page, search } });
-      setSuppliers(res.data.data);
-      setPagination(res.data.pagination);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchSuppliers(1);
-  }, [search]);
 
   function openCreateModal() {
     setEditingSupplier(null);

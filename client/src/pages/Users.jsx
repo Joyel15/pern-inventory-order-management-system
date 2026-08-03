@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import UserEditModal from "../components/UserEditModal";
@@ -6,27 +7,16 @@ import UserEditModal from "../components/UserEditModal";
 export default function Users() {
   const { user: currentUser } = useAuth();
 
-  const [users, setUsers] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const {
+    items: users,
+    pagination,
+    loading,
+    fetchItems: fetchUsers,
+  } = usePaginatedResource("/users", { search });
+
   const [editingUser, setEditingUser] = useState(null);
   const [error, setError] = useState("");
-
-  async function fetchUsers(page = 1) {
-    setLoading(true);
-    try {
-      const res = await api.get("/users", { params: { page, search } });
-      setUsers(res.data.data);
-      setPagination(res.data.pagination);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchUsers(1);
-  }, [search]);
 
   async function handleSaved() {
     setEditingUser(null);

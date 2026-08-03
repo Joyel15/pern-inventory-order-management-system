@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePaginatedResource } from "../hooks/usePaginatedResource";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import CategoryFormModal from "../components/CategoryFormModal";
@@ -8,32 +9,17 @@ export default function Categories() {
   const { hasRole } = useAuth();
   const canManage = hasRole("ADMIN", "MANAGER");
 
-  const [categories, setCategories] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const {
+    items: categories,
+    pagination,
+    loading,
+    fetchItems: fetchCategories,
+  } = usePaginatedResource("/categories", { search });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [deletingCategory, setDeletingCategory] = useState(null);
-
-  async function fetchCategories(page = 1) {
-    setLoading(true);
-    try {
-      const res = await api.get("/categories", { params: { page, search } });
-      setCategories(res.data.data);
-      setPagination(res.data.pagination);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // Re-fetch whenever search changes — but debounced conceptually
-  // is worth doing later; for now, refetch on every keystroke is
-  // simple and fine at this data scale.
-  useEffect(() => {
-    fetchCategories(1);
-  }, [search]);
 
   function openCreateModal() {
     setEditingCategory(null);
