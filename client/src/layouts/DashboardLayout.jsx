@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function DashboardLayout() {
-  const { user, logout , hasRole } = useAuth();
+  const { user, logout, hasRole } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
@@ -37,7 +37,7 @@ export default function DashboardLayout() {
         `}
       >
         <div className="px-6 py-5 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-gray-900">Inventory MS</h1>
+          <h1 className="text-lg font-bold text-gray-900">StockFlow</h1>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1">
@@ -88,10 +88,13 @@ export default function DashboardLayout() {
           <div className="hidden md:block" />
 
           <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
+            <Link
+              to="/profile"
+              className="text-right hidden sm:block hover:opacity-75"
+            >
               <p className="text-sm font-medium text-gray-900">{user?.name}</p>
               <p className="text-xs text-gray-500">{user?.role}</p>
-            </div>
+            </Link>
             <button
               onClick={logout}
               className="text-sm text-red-600 hover:text-red-700 font-medium"

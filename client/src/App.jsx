@@ -14,6 +14,7 @@ import SalesOrderDetail from "./pages/SalesOrderDetail";
 import PurchaseOrders from "./pages/PurchaseOrders";
 import PurchaseOrderDetail from "./pages/PurchaseOrderDetail";
 import Users from "./pages/Users";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
