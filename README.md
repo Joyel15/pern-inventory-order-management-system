@@ -2,7 +2,7 @@
 
 A production-style, full-stack inventory and order management platform built with the PERN stack. Supports role-based access control, real-time stock tracking, atomic order processing, and financial/inventory reporting.
 
-**Live Demo:** [https://stockflow-inventory-order-management.vercel.app](#) &nbsp;|&nbsp; **API:** [https://pern-inventory-order-management-system.onrender.com](#)
+**Live Demo:** https://stockflow-inventory-order-management.vercel.app(#) &nbsp;|&nbsp; **API:** https://pern-inventory-order-management-system.onrender.com(#)
 
 ---
 
