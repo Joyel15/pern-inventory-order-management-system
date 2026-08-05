@@ -45,7 +45,7 @@ export default function Products() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">Products</h1>
           <p className="text-sm text-slate-500 mt-0.5">
@@ -55,7 +55,7 @@ export default function Products() {
         {canManage && (
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors w-full sm:w-auto"
           >
             <Plus size={16} />
             Add Product
@@ -63,7 +63,7 @@ export default function Products() {
         )}
       </div>
 
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full sm:max-w-sm">
         <Search
           size={16}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -77,8 +77,8 @@ export default function Products() {
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+        <table className="w-full min-w-[680px] text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-slate-500">
@@ -170,7 +170,7 @@ export default function Products() {
       </div>
 
       {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
             (p) => (
               <button
