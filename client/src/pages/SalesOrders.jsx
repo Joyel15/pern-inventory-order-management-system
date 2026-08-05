@@ -35,7 +35,7 @@ export default function SalesOrders() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">Sales Orders</h1>
           <p className="text-sm text-slate-500 mt-0.5">
@@ -45,7 +45,7 @@ export default function SalesOrders() {
         {canCreate && (
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors w-full sm:w-auto"
           >
             <Plus size={16} />
             New Order
@@ -56,7 +56,7 @@ export default function SalesOrders() {
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        className="w-full sm:w-auto border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
       >
         <option value="">All Statuses</option>
         <option value="PENDING">Pending</option>
@@ -65,8 +65,8 @@ export default function SalesOrders() {
         <option value="CANCELLED">Cancelled</option>
       </select>
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+        <table className="w-full min-w-[680px] text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-slate-500">
@@ -150,7 +150,7 @@ export default function SalesOrders() {
       </div>
 
       {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
             (p) => (
               <button
