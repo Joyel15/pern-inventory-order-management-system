@@ -59,7 +59,7 @@ export default function Users() {
         </p>
       </div>
 
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full sm:max-w-sm">
         <Search
           size={16}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -79,8 +79,8 @@ export default function Users() {
         </p>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+        <table className="w-full min-w-[680px] text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-slate-500">
@@ -191,7 +191,7 @@ export default function Users() {
       </div>
 
       {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
             (p) => (
               <button
