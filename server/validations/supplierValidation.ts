@@ -9,3 +9,5 @@ export const createSupplierSchema = z.object({
 });
 
 export const updateSupplierSchema = createSupplierSchema.partial();
+export type CreateSupplierInput = z.infer<typeof createSupplierSchema>;
+export type UpdateSupplierInput = z.infer<typeof updateSupplierSchema>;

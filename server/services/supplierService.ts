@@ -1,9 +1,17 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "../config/prisma.js";
+import { AppError } from "../utils/AppError.js";
+import { hasPrismaCode } from "../utils/prismaErrors.js";
+import type { ListParams } from "../types/pagination.js";
+import type {
+  CreateSupplierInput,
+  UpdateSupplierInput,
+} from "../validations/supplierValidation.js";
 
-export async function getSuppliers({ page = 1, limit = 10, search = "" }) {
+export async function getSuppliers({ page = 1, limit = 10, search = "" }: ListParams) {
   const skip = (page - 1) * limit;
 
-  const where = search
+  const where: Prisma.SupplierWhereInput = search
     ? { name: { contains: search, mode: "insensitive" } }
     : {};
 
@@ -18,35 +26,29 @@ export async function getSuppliers({ page = 1, limit = 10, search = "" }) {
   };
 }
 
-export async function createSupplier(data, userId) {
+export async function createSupplier(data: CreateSupplierInput, userId: number) {
   try {
     return await prisma.supplier.create({ data: { ...data, createdBy: userId } });
   } catch (error) {
-    if (error.code === "P2002") {
-      const err = new Error("A supplier with this name already exists");
-      err.statusCode = 409;
-      throw err;
+    if (hasPrismaCode(error, "P2002")) {
+      throw new AppError("A supplier with this name already exists", 409);
     }
     throw error;
   }
 }
 
-export async function updateSupplier(id, data) {
+export async function updateSupplier(id: number, data: UpdateSupplierInput) {
   const supplier = await prisma.supplier.findUnique({ where: { id } });
   if (!supplier) {
-    const err = new Error("Supplier not found");
-    err.statusCode = 404;
-    throw err;
+    throw new AppError("Supplier not found", 404);
   }
   return prisma.supplier.update({ where: { id }, data });
 }
 
-export async function deleteSupplier(id) {
+export async function deleteSupplier(id: number) {
   const supplier = await prisma.supplier.findUnique({ where: { id } });
   if (!supplier) {
-    const err = new Error("Supplier not found");
-    err.statusCode = 404;
-    throw err;
+    throw new AppError("Supplier not found", 404);
   }
   return prisma.supplier.delete({ where: { id } });
 }
