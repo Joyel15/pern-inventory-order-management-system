@@ -8,3 +8,4 @@ function required(name: string): string {
 
 export const JWT_ACCESS_SECRET = required("JWT_ACCESS_SECRET");
 export const JWT_REFRESH_SECRET = required("JWT_REFRESH_SECRET");
+export const DATABASE_URL = required("DATABASE_URL");
